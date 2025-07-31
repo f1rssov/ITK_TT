@@ -1,0 +1,92 @@
+definitions:
+  handler.WalletUpdateInput:
+    properties:
+      amount:
+        type: integer
+      operationType:
+        type: string
+      valletId:
+        type: string
+    required:
+    - amount
+    - operationType
+    - valletId
+    type: object
+  model.Wallet:
+    properties:
+      amount:
+        type: integer
+      valletId:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /wallet:
+    put:
+      consumes:
+      - application/json
+      description: Выполняет операцию (пополнение или списание) на балансе кошелька
+      parameters:
+      - description: Данные для обновления баланса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.WalletUpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Операция успешно выполнена
+          schema:
+            type: string
+        "400":
+          description: Неверный формат запроса
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Кошелек не найден
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Обновить сумму на кошельке
+      tags:
+      - Wallet
+  /wallet/{wallet_id}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает текущий баланс кошелька по ID
+      parameters:
+      - description: ID кошелька в формате UUID
+        in: path
+        name: wallet_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о кошельке с балансом
+          schema:
+            $ref: '#/definitions/model.Wallet'
+        "400":
+          description: Неверный формат wallet_id
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Кошелек не найден
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить сумму на кошельке
+      tags:
+      - Wallet
+swagger: "2.0"
